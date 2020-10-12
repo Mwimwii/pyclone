@@ -1,7 +1,9 @@
 """Main module."""
 
+import re
 import subprocess
-from .locations import RCLONE_DIR_PATH, RCLONE_PATH, SHELL
+from .locations import RCLONE_DIR_PATH, RCLONE_PATH, CONFIG, SHELL, flatten
+
 
 def main():
     return 0
@@ -11,14 +13,15 @@ if __name__ == '__main__':
     print(RCLONE_DIR_PATH)
 
 
-class DriveManager():
-    # def __init__(self, config=locations.CONFIG):
-    #     pass
-    # ensure that no other linux command is
+class Pyclone():
+    '''
+        Pyclone object that will be used to interact with the pyclone shell
 
-    def cmd(self):
-        pass
-    # returns value of cmd
+    '''
+
+    def __init__(self, dir=RCLONE_DIR_PATH, executable=RCLONE_PATH):
+        self.dir = dir
+        self.executable = executable
 
     def __execute(self, cmd):
         pipe = subprocess.run(RCLONE_PATH + cmd, capture_output=True,
@@ -29,7 +32,7 @@ class DriveManager():
     def create(self, drive_type, drive_name, drive_user, drive_pass):
         cmd = ['config', 'create', drive_name,
                drive_type, 'user', drive_user, 'pass', drive_pass]
-        self.__execute(cmd)
+        return self.__execute(cmd)
 
     def copy(self, src, dest):
         cmd = ['copy', src, dest]
@@ -37,11 +40,64 @@ class DriveManager():
 
     def ls(self, drive, dir=''):
         cmd = ['ls', drive + ':/' + dir]
-        self.__execute(cmd)
+        return self.__execute(cmd)
+
+    def remove(self, drive):
+        cmd = ['config delete' + drive]
+        return self.__execute(cmd)
 
     def get_size(self, drive):
         cmd = [drive + '']
-        self.__execute(cmd)
+        return self.__execute(cmd)
 
 
-payload = {}
+class DriveManager():
+    '''
+        Manages all the drive available from the config by name only
+    '''
+
+    def __init__(self, config=CONFIG):
+        self.drives = self.__parse_config(config)
+        self.pyclone = Pyclone()
+
+    # ensure that no other linux command is
+    def __parse_config(self, config):
+
+        pattern = r'\[\S+\]'
+        config = ''.join(config)
+        print(config)
+        return flatten(re.findall(pattern, config))
+
+    def get_drive(self, drive):
+        '''
+            Returns the drive object from the pyclone config
+        '''
+        try:
+            return Drive(drive)
+        except Exception:
+            print("Drive does not exist")
+
+    def add_drive(self, drive_type, drive_name, drive_user, drive_pass):
+        out = self.pyclone.create(
+            drive_type, drive_name, drive_user, drive_pass)
+        self.drives.append(drive_name)
+        return out
+
+    def remove_drive(self, drive):
+        try:
+            self.drives.pop(self.drives.index(drive))
+            out = self.pyclone.remove(drive)
+        except ValueError:
+            print("Drive does not exist")
+
+    def drives(self):
+        return self.drives
+
+
+class Drive(Pyclone):
+    def __init__(self, drive):
+        super().__init__()
+        self.drive = drive
+
+
+DRIVES = DriveManager()
