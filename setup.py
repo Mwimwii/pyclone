@@ -23,7 +23,7 @@ class CustomInstallCommand(install):
     def install(self):
         # Locations for configs, package installation, etc
         site_packages = sysconfig.get_path("purelib")
-        package = 'src'
+        package = 'pyclone'
         package_dir = os.path.join(site_packages, package + '/')
         rclone_zip = os.path.join(package_dir, 'rclone.zip')
         rclone_dir = os.path.join(package_dir, 'rclone')
@@ -35,12 +35,13 @@ class CustomInstallCommand(install):
             sys.exit()
 
         # Download Rclone
+        import time
+        # time.sleep(300)
+        os.makedirs(rclone_dir, exist_ok=True)
         download_link = f'https://github.com/rclone/rclone/releases/download/v1.53.1/rclone-v1.53.1-{is_OS_support}-{is_Machine_support}.zip'
         urllib.request.urlretrieve(download_link, rclone_zip)
-
         # Install Rclone in the site packages
         self.install_rclone(rclone_dir, rclone_zip)
-        # os.remove(rclone_zip)
 
         if platform.uname().system != 'Windows':
             self.set_write_permissions(rclone_dir)
@@ -63,7 +64,6 @@ class CustomInstallCommand(install):
         return is_OS_support, is_Machine_support
 
     def install_rclone(self, rclone_dir, rclone_zip, rclone_conf='rclone.conf'):
-        os.makedirs(rclone_dir, exist_ok=True)
         with zipfile.ZipFile(rclone_zip, 'r') as zip_ref:
             for name in zip_ref.namelist()[1:]:
                 member = zip_ref.open(name)
@@ -96,10 +96,9 @@ setup(
     author='Mwila Nyirongo',
     author_email='mpnyirongo@gmail.com',
     include_package_data=True,
-    # package_dir={'': 'src'},
-    # package_data={'': ['src/rclone']},
-    packages=find_packages(),
-    py_modules=['pyclone'],
+    packages=['pyclone'],
+    # packages=find_packages(),
+    # py_modules=['pyclone'],
     python_requires='>=3.2',
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -123,7 +122,7 @@ setup(
     description='Python interface for rclone',
     entry_points={
         'console_scripts': [
-            'pyclone=src.cli:execute_from_commandline',
+            'pyclone=pyclone.cli:execute_from_commandline',
         ],
     },
     license='MIT license',

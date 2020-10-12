@@ -2,6 +2,5 @@ include LICENSE
 include README.md
 
 recursive-include tests *
-recursive-include src/rclone *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
