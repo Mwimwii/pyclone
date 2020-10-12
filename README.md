@@ -1,3 +1,7 @@
+<p align="center">
+  <img height="200px" src="media/logo.png" >
+</p>
+
 # pyclone
 
 An RClone wrapper for python that comes bundled with rclone 1.53.1. No need to have rclone installed.
