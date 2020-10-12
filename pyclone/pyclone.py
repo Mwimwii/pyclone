@@ -57,16 +57,19 @@ class DriveManager():
     '''
 
     def __init__(self, config=CONFIG):
-        self.drives = self.__parse_config(config)
+        self.drives = self.__get_config(config)
         self.pyclone = Pyclone()
 
     # ensure that no other linux command is
-    def __parse_config(self, config):
+    def __get_config(self, config):
+        with open(config) as f:
+            config_data = f.readlines()
+        return self.__parse_config(config_data)
 
+    def __parse_config(self, config_data):
         pattern = r'\[\S+\]'
-        config = ''.join(config)
-        print(config)
-        return flatten(re.findall(pattern, config))
+        config_data = ''.join(config_data)
+        return flatten(re.findall(pattern, config_data))
 
     def get_drive(self, drive):
         '''
@@ -90,7 +93,7 @@ class DriveManager():
         except ValueError:
             print("Drive does not exist")
 
-    def drives(self):
+    def show_drives(self):
         return self.drives
 
 
