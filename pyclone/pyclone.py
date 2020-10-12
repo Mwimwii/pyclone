@@ -1,8 +1,10 @@
 """Main module."""
 
+import json
+import os
 import re
 import subprocess
-from .locations import RCLONE_DIR_PATH, RCLONE_PATH, CONFIG, SHELL, flatten
+from .locations import RCLONE_DIR_PATH, RCLONE_PATH, CONFIG, SHELL
 
 
 def main():
@@ -13,7 +15,7 @@ if __name__ == '__main__':
     print(RCLONE_DIR_PATH)
 
 
-class Pyclone():
+class Pyclone(object):
     '''
         Pyclone object that will be used to interact with the pyclone shell
 
@@ -23,41 +25,45 @@ class Pyclone():
         self.dir = dir
         self.executable = executable
 
-    def __execute(self, cmd):
+    def execute(self, cmd):
         pipe = subprocess.run(RCLONE_PATH + cmd, capture_output=True,
                               text=True, cwd=RCLONE_DIR_PATH, shell=SHELL)
         output = pipe.stdout if pipe.stdout else pipe.stderr
         return output
 
-    def create(self, drive_type, drive_name, drive_user, drive_pass):
-        cmd = ['config', 'create', drive_name,
-               drive_type, 'user', drive_user, 'pass', drive_pass]
-        return self.__execute(cmd)
+    def create(self, remote_type, remote_name, remote_user, remote_pass):
+        cmd = ['config', 'create', remote_name,
+               remote_type, 'user', remote_user, 'pass', remote_pass]
+        return self.execute(cmd)
 
     def copy(self, src, dest):
         cmd = ['copy', src, dest]
-        self.__execute(cmd)
+        self.execute(cmd)
 
-    def ls(self, drive, dir=''):
-        cmd = ['ls', drive + ':/' + dir]
-        return self.__execute(cmd)
+    def copyurl(self, url, remote, dir='', options=[]):
+        cmd = ['copyurl', url, remote + ':', dir, ] + options.split()
+        self.execute(cmd)
 
-    def remove(self, drive):
-        cmd = ['config delete' + drive]
-        return self.__execute(cmd)
+    def ls(self, remote, dir=''):
+        cmd = ['ls', remote + ':/' + dir]
+        return self.execute(cmd)
 
-    def get_size(self, drive):
-        cmd = [drive + '']
-        return self.__execute(cmd)
+    def delete(self, remote):
+        cmd = ['config delete' + remote]
+        return self.execute(cmd)
+
+    def get_size(self, remote):
+        cmd = [remote + ':']
+        return self.execute(cmd)
 
 
-class DriveManager():
+class RemoteManager():
     '''
-        Manages all the drive available from the config by name only
+        Manages all the remote available from the config by name only
     '''
 
     def __init__(self, config=CONFIG):
-        self.drives = self.__get_config(config)
+        self.config = config
         self.pyclone = Pyclone()
 
     # ensure that no other linux command is
@@ -69,38 +75,63 @@ class DriveManager():
     def __parse_config(self, config_data):
         pattern = r'\[\S+\]'
         config_data = ''.join(config_data)
-        return flatten(re.findall(pattern, config_data))
+        parsed_config_data = re.findall(pattern, config_data)
+        return [remote[1:-1] for remote in parsed_config_data]
 
-    def get_drive(self, drive):
+    def get_remote(self, remote):
         '''
-            Returns the drive object from the pyclone config
+            Returns the remote object from the pyclone config
         '''
         try:
-            return Drive(drive)
+            return Remote(remote)
         except Exception:
-            print("Drive does not exist")
+            print("remote does not exist")
 
-    def add_drive(self, drive_type, drive_name, drive_user, drive_pass):
+    def add(self, remote_type, remote_name, remote_user, remote_pass):
         out = self.pyclone.create(
-            drive_type, drive_name, drive_user, drive_pass)
-        self.drives.append(drive_name)
+            remote_type, remote_name, remote_user, remote_pass)
         return out
 
-    def remove_drive(self, drive):
+    def delete(self, remote):
         try:
-            self.drives.pop(self.drives.index(drive))
-            out = self.pyclone.remove(drive)
+            out = self.pyclone.delete(remote)
         except ValueError:
-            print("Drive does not exist")
+            out = "remote does not exist"
+        return out
 
-    def show_drives(self):
-        return self.drives
+    def show(self):
+        return self.__get_config(self.config)
+
+    def dump(self):
+        dump_file = self.pyclone.execute(['config', 'dump'])
+        return json.loads(dump_file)
 
 
-class Drive(Pyclone):
-    def __init__(self, drive):
+class Remote(Pyclone):
+    def __init__(self, remote):
         super().__init__()
-        self.drive = drive
+        self.remote = remote
 
+    def upload(self, src):
+        cmd = ['copy', src, self.remote + ':']
+        self.execute(cmd)
 
-DRIVES = DriveManager()
+    def download(self, src, dest=os.getcwd()):
+        if dest != os.getcwd():
+            dest = os.path.join(os.getcwd(), dest)
+        cmd = ['copy',  self.remote + ':' + src, dest]
+        self.execute(cmd)
+
+    def ls(self, dir=''):
+        cmd = ['ls', self.remote + ':/' + dir]
+        return self.execute(cmd)
+
+    def delete(self):
+        cmd = ['config delete' + self.remote]
+        return self.execute(cmd)
+
+    def get_size(self):
+        cmd = [self.remote + '']
+        return self.execute(cmd)
+
+# remotes = RemoteManager()

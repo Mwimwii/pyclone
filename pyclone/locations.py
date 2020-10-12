@@ -1,4 +1,3 @@
-import sys
 import os
 import sysconfig
 import platform
@@ -16,10 +15,3 @@ if PLATFORM != 'Windows':
     PREFIX = './'
 RCLONE_PATH = [PREFIX + 'rclone']
 CONFIG = os.path.join(RCLONE_DIR_PATH, 'rclone.conf')
-
-
-def flatten(layeredList):
-    flatList = []
-    [flatList.extend(flatten(layer)) for layer in layeredList] if isinstance(
-        layeredList, list) else flatList.append(layeredList)
-    return flatList
