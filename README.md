@@ -1,7 +1,7 @@
 # Pyclone
 
 <p align="center">
-  <img height="200px" src="media/logo_pyclone.png" >
+  <img  height="200px" src="https://i.gyazo.com/895208fd1863d4ab41f61d0bae8fa7c7.png" />
 </p>
 
 Rclone for your python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
@@ -11,7 +11,7 @@ Rclone for your python environment and your virtual environment.Comes bundled wi
 - The installation automatically downloads the rclone binaries so there is no prerequisite to having rclone prior.
 - Run the following to install:
     ```python
-    pip install pyclone
+    pip install pyclone-module
     ```
     
 ## Configuration
