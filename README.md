@@ -49,7 +49,6 @@ There are three major classes in Pyclone:
 - pyclone.Pyclone()
 - pyclone.RemoteManager()
 - pyclone.Remote()
-- pyclone.Response()
 
 ## 1. pyclone.Pyclone()
 
