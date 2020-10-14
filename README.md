@@ -1,7 +1,7 @@
 # Pyclone
 
 <p align="center">
-  <img height="200px" src="media/logo.png" >
+  <img height="200px" src="media/logo_pyclone.png" >
 </p>
 
 Rclone for your python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
