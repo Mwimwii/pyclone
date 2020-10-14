@@ -8,7 +8,6 @@ package = 'pyclone'
 site_packages = sysconfig.get_path('purelib')
 RCLONE_DIR_PATH = os.path.join(site_packages, package, 'rclone/')
 PREFIX = ''
-cwd = RCLONE_DIR_PATH
 SHELL = True
 if PLATFORM != 'Windows':
     SHELL = False
