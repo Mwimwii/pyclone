@@ -1,7 +1,7 @@
 # Pyclone
 
 <p align="center">
-  <img height="200px" src="media/logo_pyclone.png" >
+  <img  height="200px" src="https://i.gyazo.com/895208fd1863d4ab41f61d0bae8fa7c7.png" />
 </p>
 
 Rclone for your python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
@@ -11,7 +11,7 @@ Rclone for your python environment and your virtual environment.Comes bundled wi
 - The installation automatically downloads the rclone binaries so there is no prerequisite to having rclone prior.
 - Run the following to install:
     ```python
-    pip install pyclone
+    pip install pyclone-module
     ```
     
 ## Configuration
@@ -49,7 +49,6 @@ There are three major classes in Pyclone:
 - pyclone.Pyclone()
 - pyclone.RemoteManager()
 - pyclone.Remote()
-- pyclone.Response()
 
 ## 1. pyclone.Pyclone()
 
@@ -62,12 +61,13 @@ There are three major classes in Pyclone:
 
 #### 1.1 pyclone.Pyclone().execute(command)
 
-- Pyclone utilizes the `subprocess` module to communicate with the shell and the `execute` method is a class method that allows you to send commands directly to rclone. Commands have to are expected to be in **list** format. This returns a **Response** object which contains the **text**, **stdout**, **stderr**, **responsecode** and **args** instance variables. 
+- Pyclone utilizes the `subprocess` module to communicate with the shell and the `execute` method allows you to send commands directly to rclone. Commands have to are expected to be in **list** format. This returns a **Response** object which contains the **text**, **stdout**, **stderr**, **responsecode** and **args** instance variables. 
 
     ```python
     >>> import pyclone
     >>> command = ['help']
-    >>> response = pyclone.Pyclone().execute(command)
+    >>> pyc = pyclone.Pyclone()
+    >>> response = pyc.execute(command)
     >>> print(reponse.responsecode)
     0 
     >>> print(repsponse.text)
