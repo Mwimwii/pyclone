@@ -1,59 +1,164 @@
+# Pyclone
+
 <p align="center">
   <img height="200px" src="media/logo.png" >
 </p>
 
-# pyclone
-
-An RClone wrapper for python that comes bundled with rclone 1.53.1. No need to have rclone installed.
+Rclone for your python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
 
 ## Installation
 
-Run the following to install:
+- The installation automatically downloads the rclone binaries so there is no prerequisite to having rclone prior.
+- Run the following to install:
+    ```python
+    pip install pyclone
+    ```
+    
+## Configuration
 
-```python
-pip install pyclone
-```
+- ##### If you already have the rclone pre-installed and want to use that specific binary you can set the paths using the the `pyclone.set_path() `method:
 
-
-and thats it.
+    ```python
+    import pyclone
+    pyclone.set_path(path=PATH_TO_RCLONE,config=PATH_TO_CONFIG)
+    ```
 
 ## Usage
 
-pyclone is a wrapper or rclone, so you can use the same commands you regularly use in rclone
+#### CLI
 
-```bash
-pyclone config
-```
+- Pyclone is a wrapper or rclone, so you can use the same commands you regularly use in rclone. Visit rclone.org/commands for further information.
 
-Or if you want to import pyclone into your project, there are a few functions available.
+    ```bash
+    user:~$ pyclone config
+    ```
+    
+### Import Pyclone into your projects
 
-```python
-import pyclone
+- Importing pyclone into your projects to have programatic control of *rclone* is as simple as `import pyclone`. Further usage will require some knowlegde on some of the classes.
 
-# Create
-pyclone.create('drive', 'drive_name', 'user', 'pass')
-pyclone.remove('drive')
+    ```python
+    import pyclone
+    pyc = pyclone.Pyclone()
+    ```
 
-pyclone.ls('drive')
-pyclone.copy(src, dest)
-pyclone.move(src, dest)
+#### Pyclone classes
 
-# Do anything else, pass arguments h2cs returns byte string
- result =  pyclone.cmd('-x https://edgeserver -i dirs.txt http://localhost/', 'driver')
- print(result)
-```
+There are three major classes in Pyclone:
 
+- pyclone.Pyclone()
+- pyclone.RemoteManager()
+- pyclone.Remote()
+- pyclone.Response()
 
-```python
-pipenv install pyclone
-```
+## 1. pyclone.Pyclone()
 
-# Developing pyclone 
+- This is the main pyclone object that is ressponsible for communicating with the **Rclone** shell. You will be dealing with this class mostly. Instanitate it like this
+
+    ```python
+    import pyclone
+    pyc = pyclone.Pyclone()
+    ```
+
+#### 1.1 pyclone.Pyclone().execute(command)
+
+- Pyclone utilizes the `subprocess` module to communicate with the shell and the `execute` method is a class method that allows you to send commands directly to rclone. Commands have to are expected to be in **list** format. This returns a **Response** object which contains the **text**, **stdout**, **stderr**, **responsecode** and **args** instance variables. 
+
+    ```python
+    >>> import pyclone
+    >>> command = ['help']
+    >>> response = pyclone.Pyclone().execute(command)
+    >>> print(reponse.responsecode)
+    0 
+    >>> print(repsponse.text)
+    Ommited..
+    ...
+    ...
+    ```
+
+#### 1.2 Create a Remote `pyc.config_create()`
+
+- 
+    ```python
+    import pyclone
+    pyc = pyclone.Pyclone()
+    pyc.config_create('remote_type', 'remote_name', 'remote@email.com', 'remote_pass')
+    ```
+
+#### 1.3 Delete a remote `pyc.config_delete()`
+
+- 
+    ```python
+    pyc.config_delete('remote_name')
+    ```
+
+#### 1.4 Move/Copy `pyc.copy()/pyc.move()`
+
+- **Note** that the the remote has to be appended by a colon at the end which will end up looking like:
+pyc.copy(file.zip, 'remote:')
+
+    ```python
+    pyc.copy('src:path', 'dest:path')
+    pyc.move('src:path', 'dest:path')
+    ```
+#### 1.5 List directory (ls) `pyc.copy()/pyc.move()`
+- 
+    ```python
+    pyc.ls('remote:path')
+    ```
+
+## Using the Remote Manager and Remote object
+
+### 2 pyclone.RemoteManager()
+
+- The Remote Mangager brings everything together by mangaing your remotes, and extending the functionality of the Pyclone and Remote objects.
+
+    ```python
+    >>> import pyclone
+    >>> remotes = pyclone.RemoteManager()
+    >>> remotes.show()
+    ['remote_A', 'remote_B']
+    ```
+
+#### 1.2 Create/Deleting a Remote `remotes.create()/remotes.delete()`
+
+- 
+    ```python
+    remotes.create('remote_type', 'remote_name', 'remote@email.com', 'remote_pass')
+    remotes.delete('remote_name')
+    ```
+
+### Remote Objects
+
+#### 2.1 Get a Remote `remotes.get_remote()`
+
+- This returns a `Remote` object that inherits most of its functionality from the Pyclone object.
+
+    ```python
+    remote_A = remotes.get_remote('remote_A')
+    ```
+
+#### 2.2 Remote methods
+
+- `remote.ls()`
+- `remote.copy('file', dl=False)`
+    - If `dl=True` this will download the file from the remote.
+- `remote.move('file:path', dl=False)`
+    - If `dl=True` this will download the file from the remote. 
+- `remote.delete('file:path')`
+- `remote.size()`
+
+### Future:
+
+- Non-blocking subprocesses
+- pyclone.Remote.check()
+
+## Developing pyclone
 
 To install pyclone, along with all the tools you need to develop and run tests, run the following in your virtualenv:
 
 ```bash
-$ pip install -e .[dev]
+user:~$ pip install -e .[dev]
 ```
 
 Drop some feedback, bugs, and feature requests if you can.
