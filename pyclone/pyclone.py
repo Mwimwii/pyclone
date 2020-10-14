@@ -42,24 +42,6 @@ class Pyclone(object):
         self.dir = dir
         self.executable = executable
 
-    def execute(cmd, dir=RCLONE_DIR_PATH, executable=RCLONE_PATH):
-        '''
-            Returns a response object similar to the requests package with:
-
-            text         - stdout or stderr output message
-            responsecode - reponse code of the process. ie 1, 2, ...
-            args         - initial arguments passed to the subprocess
-            stdout       - stdout output message
-            stderr       - stderr output message
-        '''
-        pipe = subprocess.run(executable + cmd, capture_output=True,
-                              text=True, cwd=dir, shell=SHELL)
-
-        text = pipe.stdout if pipe.stdout else pipe.stderr
-        response = Response(text, pipe.returncode,
-                            pipe.args, pipe.stdout, pipe.stderr)
-        return response
-
     def execute(self, cmd):
         '''
             Returns a response object similar to the requests package with:

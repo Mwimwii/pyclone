@@ -17,7 +17,6 @@ class CustomInstallCommand(install):
 
     def run(self):
         install.run(self)
-        print("Hello, developer, how are you? :)")
         self.install()
 
     def install(self):
@@ -87,8 +86,8 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setup(
-    name='pyclone',
-    version='1.53.1',
+    name='pyclone-module',
+    version='1.53.3',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Mwimwii/pyclone',
@@ -110,9 +109,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Operating System :: MacOS :: MacOS X,'
-        'Operating System :: Microsoft :: Windows,',
-        'Operating System :: POSIX :: SunOS/Solaris'
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: SunOS/Solaris',
         'Operating System :: Unix',
         'Topic :: Communications :: File Sharing',
         'Topic :: Internet',
