@@ -61,12 +61,13 @@ There are three major classes in Pyclone:
 
 #### 1.1 pyclone.Pyclone().execute(command)
 
-- Pyclone utilizes the `subprocess` module to communicate with the shell and the `execute` method is a class method that allows you to send commands directly to rclone. Commands have to are expected to be in **list** format. This returns a **Response** object which contains the **text**, **stdout**, **stderr**, **responsecode** and **args** instance variables. 
+- Pyclone utilizes the `subprocess` module to communicate with the shell and the `execute` method allows you to send commands directly to rclone. Commands have to are expected to be in **list** format. This returns a **Response** object which contains the **text**, **stdout**, **stderr**, **responsecode** and **args** instance variables. 
 
     ```python
     >>> import pyclone
     >>> command = ['help']
-    >>> response = pyclone.Pyclone().execute(command)
+    >>> pyc = pyclone.Pyclone()
+    >>> response = pyc.execute(command)
     >>> print(reponse.responsecode)
     0 
     >>> print(repsponse.text)
