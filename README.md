@@ -22,6 +22,12 @@ Rclone for your python environment and your virtual environment.Comes bundled wi
     import pyclone
     pyclone.set_path(path=PATH_TO_RCLONE,config=PATH_TO_CONFIG)
     ```
+- ##### If you already have your own rclone.conf and want to use it you can set the paths using the the `pyclone.set_config_path() `method:
+
+    ```python
+    import pyclone
+    pyclone.set_config_path(config="/path/to/config")
+    ```
 
 ## Usage
 
