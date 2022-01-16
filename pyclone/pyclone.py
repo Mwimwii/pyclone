@@ -2,16 +2,22 @@
 import os
 import re
 import subprocess
-from .locations import RCLONE_DIR_PATH, RCLONE_PATH, CONFIG, SHELL
+import pyclone.locations
 
+def set_executable_path(path):
+    pyclone.locations.RCLONE_PATH = [path]
+
+def set_config_path(config):
+    pyclone.locations.CONFIG = config
 
 def set_path(path, config):
-    global RCLONE_DIR_PATH, CONFIG
-    RCLONE_DIR_PATH = path
-    CONFIG = config
-    dict(RcloneDirectorty=RCLONE_DIR_PATH, ConfigPath=CONFIG)
+    pyclone.locations.RCLONE_DIR_PATH = path
+    pyclone.locations.CONFIG = config
+    dict(
+        RcloneDirectorty=pyclone.locations.RCLONE_DIR_PATH,
+        ConfigPath=pyclone.locations.CONFIG
+    )
     return
-
 
 def main():
     return 0
@@ -38,9 +44,9 @@ class Pyclone(object):
         Pyclone object that will be used to interact with the pyclone shell
     '''
 
-    def __init__(self, dir=RCLONE_DIR_PATH, executable=RCLONE_PATH):
-        self.dir = dir
-        self.executable = executable
+    def __init__(self):
+        self.dir = pyclone.locations.RCLONE_DIR_PATH
+        self.executable = pyclone.locations.RCLONE_PATH
 
     def execute(self, cmd):
         '''
@@ -52,8 +58,13 @@ class Pyclone(object):
             stdout       - stdout output message
             stderr       - stderr output message
         '''
-        pipe = subprocess.run(self.executable + cmd, capture_output=True,
-                              text=True, cwd=self.dir, shell=SHELL)
+        pipe = subprocess.run(
+            self.executable + ["--config",pyclone.locations.CONFIG] + cmd,
+            capture_output=True,
+            text=True,
+            cwd=self.dir,
+            shell=pyclone.locations.SHELL
+        )
 
         text = pipe.stdout if pipe.stdout else pipe.stderr
         response = Response(text, pipe.returncode,
@@ -103,7 +114,7 @@ class RemoteManager():
         Manages all the remote available from the config by name only
     '''
 
-    def __init__(self, config=CONFIG):
+    def __init__(self, config=pyclone.locations.CONFIG):
         self.config = config
         self.pyclone = Pyclone()
 
