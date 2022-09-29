@@ -14,7 +14,6 @@ from setuptools.command.install import install
 
 class CustomInstallCommand(install):
     """Customized setuptools install command - prints a friendly greeting."""
-    
     def run(self):
         install.run(self)
         self.install()
