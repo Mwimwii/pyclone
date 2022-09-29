@@ -4,13 +4,10 @@
   <img  height="200px" src="https://i.gyazo.com/895208fd1863d4ab41f61d0bae8fa7c7.png" />
 </p>
 
-Rclone for the python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
+Rclone for the python environment and your virtual environment. Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
 
-<<<<<<< Updated upstream
-## Installation
-=======
-###          Installation
->>>>>>> Stashed changes
+###            Installation
+
 
 - The installation automatically downloads the rclone binaries so there is no prerequisite to having rclone prior.
 - Run the following to install:
@@ -20,7 +17,7 @@ Rclone for the python environment and your virtual environment.Comes bundled wit
     
 ## Configuration
 
-- ##### If you already have the rclone pre-installed and want to use that specific binary you can set the paths using the the `pyclone.set_path() `method:
+- ##### If you already have rclone pre-installed and want to use that specific binary you can set the paths using the the `pyclone.set_path() `method:
 
     ```python
     import pyclone
