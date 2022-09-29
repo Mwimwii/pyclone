@@ -18,7 +18,6 @@ class CustomInstallCommand(install):
     
     
     
-    
     def run(self):
         install.run(self)
         self.install()
