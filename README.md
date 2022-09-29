@@ -6,7 +6,11 @@
 
 Rclone for the python environment and your virtual environment.Comes bundled with the Rclone binary so, no need to have Rclone pre-installed.
 
+<<<<<<< Updated upstream
 ## Installation
+=======
+###          Installation
+>>>>>>> Stashed changes
 
 - The installation automatically downloads the rclone binaries so there is no prerequisite to having rclone prior.
 - Run the following to install:
