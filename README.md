@@ -1,5 +1,4 @@
 # Pyclone
-# commit one redo
 
 <p align="center">
   <img  height="200px" src="https://i.gyazo.com/895208fd1863d4ab41f61d0bae8fa7c7.png" />
@@ -78,7 +77,7 @@ There are three major classes in Pyclone:
     >>> response = pyc.execute(command)
     >>> print(reponse.responsecode)
     0 
-    >>> print(repsponse.text)
+    >>> print(response.text)
     Ommited..
     ...
     ...
